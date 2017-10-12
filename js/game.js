@@ -64,7 +64,7 @@ var Game = function () {
             return false;
         } else if (pos.y + y < 0) {
             return false;
-        } else if (pos.y + y >= gameData.length) {
+        } else if (pos.y + y >= gameData[0].length) {
             return false;
         } else if (gameData[pos.x + x][pos.y + y] == 1) {
             return false;
@@ -107,14 +107,40 @@ var Game = function () {
             cur.down();
             setData();
             refreshDiv(gameData, gameDivs);
+            return true;
+        }
+        return false;
+    };
+    var left = function () {
+        if (cur.canDown(isValid) && cur.canLeft(isValid)) {
+            clearData();
+            cur.left();
+            setData();
+            refreshDiv(gameData, gameDivs);
+        }
+    };
+    var right = function () {
+        if (cur.canDown(isValid) && cur.canRight(isValid)) {
+            clearData();
+            cur.right();
+            setData();
+            refreshDiv(gameData, gameDivs);
+        }
+    };
+    var rotate = function () {
+        if (cur.canDown(isValid) && cur.canRotate(isValid)) {
+            clearData();
+            cur.rotate();
+            setData();
+            refreshDiv(gameData, gameDivs);
         }
     };
 
     var init = function (doms) {
         gameDiv = doms.gameDiv;
         nextDiv = doms.nextDiv;
-        cur = new Square();
-        next = new Square();
+        cur = new SquareFactory.prototype.make(2, 2);
+        next = new SquareFactory.prototype.make(3, 2);
         initDiv(gameData, gameDivs, gameDiv);
         initDiv(next.data, nextDivs, nextDiv);
         setData();
@@ -124,4 +150,10 @@ var Game = function () {
 
     this.init = init;
     this.down = down;
+    this.left = left;
+    this.right = right;
+    this.rotate = rotate;
+    this.full = function () {
+        while (down());
+    };
 };
